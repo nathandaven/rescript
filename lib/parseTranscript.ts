@@ -5,7 +5,6 @@ import type { SpeakerInfo, Word } from "./types";
 /** Caption / transcript files we can turn into timed words. */
 export const TRANSCRIPT_ACCEPT =
   ".srt,.vtt,.json,application/json,text/vtt,text/plain";
-export const TRANSCRIPT_FILE_ERROR = en["transcript.invalidFile"];
 
 const TRANSCRIPT_EXT = /\.(srt|vtt|json)$/i;
 

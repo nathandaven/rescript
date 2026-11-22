@@ -9,7 +9,6 @@
  */
 import { en } from "@/lib/i18n/messages/en";
 import { setVideoFrameRate } from "./media";
-import { reportError } from "./sentry";
 import type { ExportRequest } from "./exportArgs";
 import type {
   NativeMediaFailure,
@@ -19,22 +18,15 @@ import type {
 
 /** The bundled binary can't run here; use ffmpeg.wasm instead. */
 export class NativeUnavailableError extends Error {
-  constructor(readonly detail: string) {
+  constructor() {
     super("Native media engine unavailable");
     this.name = "NativeUnavailableError";
   }
 }
 
-/**
- * A native job that ran and failed. `message` is the user-facing string;
- * `detail` (ffmpeg's stderr tail) goes to Sentry via reportError.
- */
+/** A native job that ran and failed. `message` is the user-facing string. */
 export class NativeMediaError extends Error {
-  constructor(
-    message: string,
-    readonly code: NativeMediaFailure,
-    readonly detail?: string
-  ) {
+  constructor(message: string, readonly code: NativeMediaFailure) {
     super(message);
     this.name = "NativeMediaError";
   }
@@ -55,7 +47,6 @@ function bridge(): RescriptDesktopMedia | null {
 }
 
 let availability: Promise<boolean> | null = null;
-let unavailableDetail: string | null = null;
 
 /** Probe once per session whether the native engine can be used. */
 export function nativeMediaAvailable(): Promise<boolean> {
@@ -63,34 +54,22 @@ export function nativeMediaAvailable(): Promise<boolean> {
     const media = bridge();
     availability = media
       ? media.probe().then(
-          (res) => {
-            if (!res.ok) unavailableDetail = res.detail ?? res.code;
-            return res.ok;
-          },
-          (err: unknown) => {
-            unavailableDetail = err instanceof Error ? err.message : String(err);
-            return false;
-          }
+          (res) => res.ok,
+          () => false
         )
       : Promise.resolve(false);
   }
   return availability;
 }
 
-/** Why the probe said no, for the fallback report. */
-export function nativeUnavailableReason(): string | null {
-  return unavailableDetail;
-}
-
 /** Stop using native for the rest of the session (it failed in a way wasm may not). */
-export function disableNativeMedia(detail: string): void {
-  unavailableDetail = detail;
+export function disableNativeMedia(): void {
   availability = Promise.resolve(false);
 }
 
 function requireBridge(): RescriptDesktopMedia {
   const media = bridge();
-  if (!media) throw new NativeUnavailableError("no desktop bridge");
+  if (!media) throw new NativeUnavailableError();
   return media;
 }
 
@@ -99,9 +78,9 @@ function fail(
   res: Extract<NativeMediaResult, { ok: false }>,
   message: string
 ): never {
-  if (res.code === "unavailable") throw new NativeUnavailableError(res.detail ?? "unavailable");
-  if (res.code === "no-space") throw new NativeMediaError(en["error.diskFull"], res.code, res.detail);
-  throw new NativeMediaError(message, res.code, res.detail);
+  if (res.code === "unavailable") throw new NativeUnavailableError();
+  if (res.code === "no-space") throw new NativeMediaError(en["error.diskFull"], res.code);
+  throw new NativeMediaError(message, res.code);
 }
 
 const sourceHints = new WeakMap<File, SourceHint>();
@@ -210,8 +189,6 @@ const activeJobs = new Set<string>();
 export interface NativeExport {
   outputId: string;
   size: number;
-  hardwareDecode: boolean;
-  hardwareEncode: boolean;
 }
 
 export async function nativeRenderExport(
@@ -230,19 +207,9 @@ export async function nativeRenderExport(
     if (!res.ok) {
       fail(res, en[request.kind === "audio" ? "error.audioExport" : "error.videoExport"]);
     }
-    if (res.fallback) {
-      // The user got their file, from the software retry. Still worth
-      // knowing: every such export took the slow path, and the stderr says why.
-      reportError(
-        new NativeMediaError("Hardware export failed; used software", "failed", res.fallback),
-        "native-hw-fallback"
-      );
-    }
     return {
       outputId: res.outputId,
       size: res.size,
-      hardwareDecode: res.hardwareDecode,
-      hardwareEncode: res.hardwareEncode,
     };
   } finally {
     if (jobId) activeJobs.delete(jobId);

@@ -14,7 +14,7 @@ import {
   Type,
 } from "lucide-react";
 import logo from "@/assets/logo.png";
-import SocialLinks, { WEBSITE_URL } from "./SocialLinks";
+import SocialLinks from "./SocialLinks";
 import SettingsMenu from "./SettingsMenu";
 import ModelSelector, {
   LanguageSection,
@@ -271,21 +271,19 @@ export default function UploadScreen({
         <div className="w-full max-w-xl">
           {!isElectron && (
             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <a href={WEBSITE_URL} className="hover:opacity-80 transition-opacity">
-                <div className="flex min-w-0 items-center">
-                  <Image
-                    src={logo}
-                    alt="Rescript"
-                    width={24}
-                    height={24}
-                    priority
-                    className="rounded-sm border border-zinc-200 dark:border-zinc-700"
-                  />
-                  <p className="ml-2 text-[15px] font-medium text-zinc-800 dark:text-zinc-100">
-                    Rescript
-                  </p>
-                </div>
-              </a>
+              <div className="flex min-w-0 items-center">
+                <Image
+                  src={logo}
+                  alt="Rescript"
+                  width={24}
+                  height={24}
+                  priority
+                  className="rounded-sm border border-zinc-200 dark:border-zinc-700"
+                />
+                <p className="ml-2 text-[15px] font-medium text-zinc-800 dark:text-zinc-100">
+                  Rescript
+                </p>
+              </div>
               <div className="flex flex-wrap items-center gap-2 sm:justify-end">
                 <SettingsMenu />
                 <div className="h-5 w-px bg-zinc-200 dark:bg-zinc-700 mr-1" />
@@ -434,7 +432,7 @@ export default function UploadScreen({
           </div>}
 
           {!isElectron && <div className="mt-6 flex flex-col items-center gap-2">
-            <SocialLinks variant="text" />
+            <SocialLinks />
           </div>}
         </div>
       </div>

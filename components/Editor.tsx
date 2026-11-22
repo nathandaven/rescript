@@ -9,8 +9,6 @@ import { activeMediaEngine, extractAudio } from "@/lib/mediaEngine";
 import { VAD_SAMPLE_RATE } from "@/lib/vad";
 import { isNetworkError } from "@/lib/network";
 import { isElectron } from "@/lib/platform";
-import { reportError } from "@/lib/sentry";
-import { startSessionReporting } from "@/lib/telemetry";
 import { useMediaEngineSupport } from "@/hooks/useMediaEngineSupport";
 import { useDesktopMenu } from "@/hooks/useDesktopMenu";
 import { useIsDesktopLayout } from "@/hooks/useIsDesktopLayout";
@@ -203,10 +201,6 @@ export default function Editor() {
     [engineReady, startMenuFile, t]
   );
 
-  // Daily-active signal: reports the launch, then again on each day rollover so
-  // a long-running window doesn't look churned.
-  useEffect(() => startSessionReporting(), []);
-
   // Processing pipeline: load ffmpeg -> extract audio -> (maybe) transcribe.
   // Restored projects already have words; they only need PCM for the waveform.
   const startedFor = useRef<File | null>(null);
@@ -253,7 +247,6 @@ export default function Editor() {
           s.setError(en["error.mediaEngineNetwork"]);
           return;
         }
-        reportError(err, "media-pipeline");
         s.setError(
           err instanceof Error ? err.message : en["error.processFile"]
         );

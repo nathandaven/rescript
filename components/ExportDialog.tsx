@@ -11,8 +11,6 @@ import {
   X,
 } from "lucide-react";
 import { useEditorStore, type ExportResult } from "@/lib/store";
-import { reportError } from "@/lib/sentry";
-import { trackEvent } from "@/lib/telemetry";
 import { formatTime, getCutRanges, getEditedDuration, getKeepRanges } from "@/lib/edits";
 import {
   defaultExportResolution,
@@ -289,25 +287,8 @@ export default function ExportDialog() {
           ? { kind: "file", outputId: result.outputId, size: result.size }
           : { kind: "blob", url: URL.createObjectURL(result.blob) };
       setExportResult(next);
-      trackEvent("export_completed", {
-        kind: activeTab,
-        format: activeTab === "audio" ? audioFormat : videoFormat,
-        engine: result.engine,
-        ...(activeTab === "audio" ? {} : { resolution }),
-        ...(result.engine === "native" && activeTab !== "audio"
-          ? {
-              hardwareDecode: result.hardwareDecode,
-              hardwareEncode: result.hardwareEncode,
-            }
-          : {}),
-      });
     } catch (err) {
       if (!stillCurrent()) return;
-      // The message we show is friendly and lossy — "Export failed while
-      // rendering the video" says nothing about which of ffmpeg's failure modes
-      // it was. Send the original so the export path is visible in Sentry at
-      // all; until now only the crashes that escaped this catch were.
-      reportError(err, `export-${activeTab}`);
       setError(err instanceof Error ? err.message : en["error.export"]);
     } finally {
       if (stillCurrent()) setStatus("ready");
@@ -343,7 +324,6 @@ export default function ExportDialog() {
         setExportResult({ ...current, savedName });
       }
     } catch (err) {
-      reportError(err, "export-save");
       setError(err instanceof Error ? err.message : en["error.exportSave"]);
     } finally {
       setSaving(false);
@@ -370,13 +350,6 @@ export default function ExportDialog() {
         ...(textSupportsSpeakerLabels ? { speakerLabels } : {}),
       });
       setError(null);
-      trackEvent("export_completed", {
-        kind: "transcript",
-        format: textFormat,
-        ...(textSupportsTimestamps ? { timestamps: includeTimestamps } : {}),
-        ...(textSupportsShortCues ? { shortCues } : {}),
-        ...(textSupportsSpeakerLabels ? { speakerLabels } : {}),
-      });
     } catch (err) {
       setError(err instanceof Error ? err.message : en["error.export"]);
     }
@@ -418,7 +391,6 @@ export default function ExportDialog() {
         height,
         sourceFrameRate,
       });
-      trackEvent("export_completed", { kind: "timeline", format: timelineFormat });
     } catch (err) {
       setError(err instanceof Error ? err.message : en["error.timelineExport"]);
     } finally {

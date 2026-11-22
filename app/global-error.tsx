@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-import { reportError } from "@/lib/sentry";
 import {
   loadUiLocalePreference,
   resolveUiLocale,
@@ -13,12 +11,12 @@ import {
  * Last-resort boundary for a crash that escaped the editor's own error handling.
  *
  * `global-error` replaces the root layout when it renders, so it gets neither
- * globals.css nor the `dark` class the appearance toggle sets — hence inline
- * styles and a `prefers-color-scheme` block rather than Tailwind. Metadata
- * exports aren't supported here either, so the title is a React element.
+ * globals.css nor the `dark` class the appearance toggle sets. That is why it
+ * uses inline styles and a `prefers-color-scheme` block rather than Tailwind.
+ * Metadata exports aren't supported here either, so the title is a React
+ * element.
  */
 export default function GlobalError({
-  error,
   unstable_retry,
 }: {
   error: Error & { digest?: string };
@@ -29,9 +27,6 @@ export default function GlobalError({
     systemLanguages()
   );
   const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
-  useEffect(() => {
-    reportError(error, "render");
-  }, [error]);
 
   return (
     <html lang={locale}>

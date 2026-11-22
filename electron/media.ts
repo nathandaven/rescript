@@ -15,7 +15,7 @@
  * Every handler resolves to a result object instead of throwing: errors thrown
  * across `ipcMain.handle` arrive as "Error invoking remote method…" strings,
  * which would lose both the failure kind (fall back to wasm or not) and the
- * stderr the renderer reports to Sentry.
+ * stderr the renderer needs for diagnostics.
  */
 import {
   app,

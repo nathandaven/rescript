@@ -9,7 +9,6 @@
  * ffmpeg.wasm (lib/ffmpeg.ts). Only "the binary can't run" falls back; a job
  * native ffmpeg rejected would fail in wasm too, just slower.
  */
-import { reportError } from "./sentry";
 import * as wasm from "./ffmpeg";
 import type {
   AudioExportFormat,
@@ -23,7 +22,6 @@ import {
   nativeExtractAudio,
   nativeMediaAvailable,
   nativeRenderExport,
-  nativeUnavailableReason,
   NativeUnavailableError,
   type NativeExport,
   type StagingListener,
@@ -44,25 +42,14 @@ export type MediaExportOptions =
     }
   | { kind: "audio"; format: AudioExportFormat };
 
-let reportedProbe = false;
-
 /** Which engine the next job will use. */
 export async function activeMediaEngine(): Promise<MediaEngine> {
   if (await nativeMediaAvailable()) return "native";
-  // A desktop build whose binary didn't pass the probe is worth knowing about
-  // (once): it means every desktop export there is back on the wasm heap.
-  const reason = nativeUnavailableReason();
-  if (reason && !reportedProbe) {
-    reportedProbe = true;
-    reportError(new NativeUnavailableError(reason), "native-media-fallback");
-  }
   return "wasm";
 }
 
-function fallBack(err: NativeUnavailableError): void {
-  disableNativeMedia(err.detail);
-  reportedProbe = true;
-  reportError(err, "native-media-fallback");
+function fallBack(): void {
+  disableNativeMedia();
 }
 
 /**
@@ -79,7 +66,7 @@ export async function extractAudio(
       return await nativeExtractAudio(file, onStaging);
     } catch (err) {
       if (!(err instanceof NativeUnavailableError)) throw err;
-      fallBack(err);
+      fallBack();
     }
   }
   return wasm.extractAudio(file);
@@ -111,7 +98,7 @@ export async function exportMedia(
       return { engine: "native", ...(await nativeRenderExport(file, request, onProgress)) };
     } catch (err) {
       if (!(err instanceof NativeUnavailableError)) throw err;
-      fallBack(err);
+      fallBack();
       onProgress(0);
     }
   }

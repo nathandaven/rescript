@@ -24,7 +24,7 @@ index fae4753..625b7f7 100644
      #registerHandlers = () => {
          if (this.#worker) {
 +            // Deliberately not preventDefault()-ing: the error should still
-+            // reach the page's global handler so crash reporting can see it.
++            // reach the page's global handler.
 +            this.#worker.onerror = (event) => {
 +                this.#failAllPending(new Error(event.message || "ffmpeg worker crashed"));
 +            };

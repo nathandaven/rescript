@@ -83,10 +83,6 @@ const MIME: Record<TranscriptFormat, string> = {
   pdf: "application/pdf",
 };
 
-export function transcriptMime(format: TranscriptFormat): string {
-  return MIME[format];
-}
-
 export function transcriptExtension(format: TranscriptFormat): string {
   return `.${format}`;
 }

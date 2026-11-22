@@ -62,8 +62,6 @@ export type ParakeetModelInfo = ModelDisplay & {
   repoId: string;
 };
 
-export type ModelInfo = WhisperModelInfo | ParakeetModelInfo;
-
 /** Display order for model rows in the source dropdown. */
 export const MODEL_ORDER: ModelId[] = [
   "base",

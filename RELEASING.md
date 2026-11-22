@@ -26,7 +26,7 @@ npm run cut:major   # 0.1.0 -> 1.0.0
 > These wrap `npm version <type> && git push --follow-tags`. `npm version`
 > refuses to run with uncommitted changes, so commit your work first.
 
-Then watch the build at <https://github.com/wassgha/rescript/actions>.
+Then watch the build at <https://github.com/nathandaven/rescript/actions>.
 electron-builder uploads installers to a **draft** GitHub Release while the
 three platform jobs run. Once they all succeed, the `publish` job writes
 AI-generated release notes (from the diff since the previous tag) and flips
@@ -98,15 +98,14 @@ move to a newer upstream release, update `RELEASE_TAG` and the digests
 (`gh api repos/eugeneware/ffmpeg-static/releases/tags/<tag>` lists them).
 
 If the bundled binary is missing or won't start on a user's machine, the app
-falls back to ffmpeg.wasm and reports `stage=native-media-fallback` to Sentry.
-`RESCRIPT_MEDIA_ENGINE=wasm` forces the wasm engine; `RESCRIPT_FFMPEG_PATH`
+falls back to ffmpeg.wasm. `RESCRIPT_MEDIA_ENGINE=wasm` forces the wasm engine;
+`RESCRIPT_FFMPEG_PATH`
 points at a specific binary.
 
 On macOS, exports use VideoToolbox: hardware decoding for HEVC / ProRes / AV1
 sources (software stays faster for H.264) and the hardware H.264 encoder for
-MP4. If a hardware attempt fails, the same job re-runs in software and the
-failure is reported as `stage=native-hw-fallback`. `RESCRIPT_MEDIA_HW=0`
-turns hardware off. Windows and Linux render in software for now.
+MP4. If a hardware attempt fails, the same job re-runs in software.
+`RESCRIPT_MEDIA_HW=0` turns hardware off. Windows and Linux render in software for now.
 
 ## How signing & notarization work (macOS)
 
@@ -135,5 +134,4 @@ disabled in `npm run electron:dev` and only runs in packaged builds
 - App icons live in `build/` (`icon.png` ≥512px). electron-builder derives
   `.icns` / `.ico` from it.
 - Desktop builds set `NEXT_PUBLIC_ELECTRON=1` so the static export skips the
-  COI service worker (headers come from the `app://` protocol). Google Analytics
-  still loads in the desktop app the same as on the web.
+  COI service worker (headers come from the `app://` protocol).

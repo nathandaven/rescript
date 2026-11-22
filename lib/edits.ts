@@ -258,22 +258,6 @@ export function restoreWordsCoveredBy(
   return changed ? next : words;
 }
 
-/** Find the clip containing time t, if any. */
-export function clipAt(t: number, clips: ClipSegment[]): ClipSegment | null {
-  for (const c of clips) {
-    if (t >= c.start && t < c.end) return c;
-    // Include exact end of last clip / exact start
-    if (t === c.end && Math.abs(c.end - c.start) > 0) {
-      // Prefer matching start of next; fall through
-    }
-  }
-  // Exact end of media: last clip
-  for (let i = clips.length - 1; i >= 0; i--) {
-    if (t === clips[i].end) return clips[i];
-  }
-  return null;
-}
-
 /**
  * Whether a split is allowed at time t (inside a keep region, not too close
  * to existing edges or scene boundaries).

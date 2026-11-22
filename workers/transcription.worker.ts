@@ -1437,7 +1437,6 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       post({
         type: "error",
         message: en["error.modelDownload"],
-        cause: "network",
       });
       return;
     }

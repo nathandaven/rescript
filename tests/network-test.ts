@@ -106,7 +106,7 @@ async function retryChecks() {
     };
     installFetchRetry(scope);
     try {
-      await scope.fetch("/api/telemetry", { method: "POST", body: "{}" });
+      await scope.fetch("/api/example", { method: "POST", body: "{}" });
     } catch {
       // expected
     }

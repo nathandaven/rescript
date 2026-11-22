@@ -3,9 +3,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { en } from "@/lib/i18n/messages/en";
 import { isModelId } from "@/lib/models";
-import { reportError } from "@/lib/sentry";
 import { useEditorStore } from "@/lib/store";
-import { trackEvent } from "@/lib/telemetry";
 import type { WorkerResponse } from "@/lib/types";
 
 let activeWorker: Worker | null = null;
@@ -61,12 +59,6 @@ export function useTranscriber() {
           s.setWords(msg.words);
           s.setStatus("ready");
           s.setPartialText("");
-          // Which model and language actually get used, to prioritise backends.
-          // Nothing about the media itself — not its length, not the text.
-          trackEvent("transcription_completed", {
-            model,
-            language: transcriptLanguage,
-          });
           // Drop the worker (and its ORT heaps) before the user exports.
           // Every transcribe() already starts a fresh worker, so keeping this
           // one alive only competes with ffmpeg.wasm for renderer memory —
@@ -77,14 +69,6 @@ export function useTranscriber() {
           break;
         case "error":
           s.setError(msg.message);
-          // A connection that dropped mid-download is the user's network, and
-          // the worker already retried it. There is no stack to act on, so
-          // reporting it only spends quota on an issue we cannot fix.
-          if (msg.cause !== "network") {
-            // Worker errors cross a postMessage boundary, so the original stack
-            // is already gone by here — send the message with a stage tag.
-            reportError(new Error(msg.message), "transcription");
-          }
           break;
       }
     };
@@ -92,10 +76,6 @@ export function useTranscriber() {
       const s = useEditorStore.getState();
       if (s.skipTranscription) return;
       s.setError(err.message || en["error.workerCrashed"]);
-      reportError(
-        new Error(err.message || en["error.workerCrashed"]),
-        "transcription-worker"
-      );
     };
 
     // Transfer, not copy: the worker takes ownership of the PCM and `audio` is

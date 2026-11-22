@@ -91,15 +91,14 @@ call it.
 
 **How it broke Rescript.** Export sat at "Rendering in your browser… 0%"
 indefinitely with no error — the dialog has no timeout of its own, so the run
-never ended and never failed. The underlying crash *was* reaching Sentry as an
-unhandled `RuntimeError: memory access out of bounds`, tagged to no stage,
-because it never travelled through any of our `catch` blocks.
+never ended and never failed. The underlying crash was an unhandled
+`RuntimeError: memory access out of bounds`, tagged to no stage, because it
+never travelled through any of our `catch` blocks.
 
 **The patch.** Adds `#failAllPending(reason)` and wires it to `worker.onerror`
 and `worker.onmessageerror`, so a dead worker rejects every outstanding call
 instead of stranding it. It deliberately does *not* `preventDefault()` the error
-event — the crash should still reach the global handler so Sentry keeps seeing
-it.
+event, so the crash still reaches the global handler.
 
 This covers the class worker dying. A trap inside a nested emscripten pthread
 does not bubble to the parent `Worker`, so `lib/ffmpeg.ts` also runs a liveness

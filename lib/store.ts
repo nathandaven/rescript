@@ -28,7 +28,6 @@ import {
 } from "./edits";
 import { isModelId, loadModelPreference, saveModelPreference } from "./models";
 import { isTranscriptSource, type TranscriptSource } from "./source";
-import { trackEvent } from "./telemetry";
 import {
   DEFAULT_TRANSCRIPT_LANGUAGE,
   isTranscriptLanguage,
@@ -448,12 +447,6 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       waveform: null,
       hasAudio: false,
       duration: 0,
-    });
-    // Funnel step between opening the app and getting a transcript. `kind` and
-    // `source` are fixed vocabulary — nothing derived from the file itself.
-    trackEvent("project_created", {
-      kind,
-      source: imported ? "import" : "asr",
     });
   },
 

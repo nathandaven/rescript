@@ -4,29 +4,15 @@
 </p>
 
 # rescript.
-[![Join the Discord](https://img.shields.io/badge/Discord-Join%20the%20server-5865F2?logo=discord&logoColor=white)](https://discord.gg/qJAhYFydat)
-[![Follow @wassgha on X](https://img.shields.io/badge/Follow%20@wassgha-000000?logo=x&logoColor=white)](https://x.com/wassgha)
 
-**✨ Try it in the browser [app.getrescript.com](https://app.getrescript.com/)** or download the [Desktop App](#download)
-
-[![Rescript Demo](./screenshots/rescript.png)](https://getrescript.com/)
+> fork with telemetry removed
 
 Rescript is an open-source, transcript-based media editor. Drop in a video or
 audio file and it is transcribed locally with per-word timestamps and speaker
 labels. Delete words in the transcript and the corresponding clip is cut from
 the media. Export the final cut — without your file ever leaving your device.
 
-## Download
-
-<div align="center">
-
-<a href="https://www.getrescript.com/download?platform=mac-arm"><img src="assets/download/download-macos-arm64.svg" alt="Download for macOS — Apple Silicon" height="48"></a> &nbsp; <a href="https://www.getrescript.com/download?platform=mac-intel"><img src="assets/download/download-macos-x64.svg" alt="Download for macOS — Intel" height="48"></a> &nbsp; <a href="https://www.getrescript.com/download?platform=windows"><img src="assets/download/download-windows.svg" alt="Download for Windows" height="48"></a> &nbsp; <a href="https://www.getrescript.com/download?platform=linux"><img src="assets/download/download-linux-appimage.svg" alt="Download the AppImage for Linux" height="48"></a> &nbsp; <a href="https://www.getrescript.com/download?platform=linux-deb"><img src="assets/download/download-debian-deb.svg" alt="Download the .deb for Linux" height="48"></a>
-
-</div>
-
-See the [Releases](https://github.com/wassgha/rescript/releases) page. Desktop
-builds auto-update from GitHub Releases. Prefer the browser? Use the
-[web app](https://getrescript.com/) — same editor, no install.
+## Features
 
 - 🔒 **Private by design** — no auth, no uploads; all media processing happens on-device
 - 📝 **Word-level editing** — select words, press ⌫, the cut follows the text
@@ -46,7 +32,7 @@ builds auto-update from GitHub Releases. Prefer the browser? Use the
 - 📦 **In-browser / desktop export** — frame-accurate re-encode with ffmpeg.wasm
 - 🎞️ **NLE / DAW timeline export** — DaVinci Resolve / Premiere XML, Final Cut FCPXML, Pro Tools/Logic AAF, Reaper `.rpp`, Samplitude `.edl`, Blender `.blend` (Video Editing project linked to the original file; save it next to the source)
 - 🎧 **Audio files** — edit podcasts, voice notes, and interviews the same way as video
-- 🖥️ **Desktop app** — macOS, Windows, and Linux via Electron (signed + notarized on Mac)
+- 🖥️ **Desktop app** — macOS, Windows, and Linux via Electron
 
 ## Stack
 
@@ -75,8 +61,6 @@ For desktop packaging, signing, and cutting releases, see
 
 ## How it works
 
-[![Rescript Promo](./screenshots/rescript-2.png)](https://getrescript.com/)
-
 1. **Extract** — ffmpeg.wasm decodes the audio track to mono 16 kHz PCM.
 2. **Transcribe** — Whisper runs in a Web Worker with `return_timestamps: "word"`,
    streaming text as it goes; pyannote assigns a speaker to every word.
@@ -97,12 +81,12 @@ inference when available, falling back to WASM otherwise. The desktop app
 bundles Chromium via Electron and sets the same isolation headers on its
 `app://` protocol.
 
-## Telemetry
+## Privacy
 
-By default, Rescript reports anonymous usage stats and crash reports so we can
-tell how many people actually use it, which features are worth the maintenance,
-and what's breaking. You can turn both off in **Settings → Privacy → Help
-improve the app**, which stops them immediately and permanently on that install. Crash reports go to Sentry and carry a stack trace, the app version, and the platform.
+Rescript has no telemetry, no analytics, and no crash reporting. Nothing about
+your usage, your media, or your machine leaves the device. The only runtime
+network requests are the first-run model downloads and the desktop update
+check.
 
 ## License
 
@@ -117,13 +101,3 @@ this license. Contact the author for commercial licensing.
 Prior releases published under the MIT License remain available under MIT for
 those versions only.
 
----
-
-[![License: PolyForm Noncommercial](https://img.shields.io/badge/license-PolyForm%20Noncommercial-111?style=flat-square)](LICENSE)
-[![Platforms](https://img.shields.io/badge/platforms-Web%20·%20macOS%20·%20Windows%20·%20Linux-111?style=flat-square)](#download)
-[![Electron](https://img.shields.io/badge/Electron-42-111?style=flat-square&logo=electron&logoColor=9FEAF9)](https://www.electronjs.org/)
-[![Stars](https://img.shields.io/github/stars/wassgha/rescript?style=flat-square&color=111)](https://github.com/wassgha/rescript/stargazers)
-[![Latest release](https://img.shields.io/github/v/release/wassgha/rescript?label=latest%20release&sort=semver&style=flat-square&color=111)](https://github.com/wassgha/rescript/releases/latest)
-
-Built by [@wassgha](https://x.com/wassgha) — follow along on X for updates, or
-come say hi in the [Discord](https://discord.com/invite/qJAhYFydat).
