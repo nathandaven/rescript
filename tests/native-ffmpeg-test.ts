@@ -6,7 +6,7 @@
  * renderer back to ffmpeg.wasm.
  *
  * Skips the rendering half when the binary hasn't been fetched, so a plain
- * `npm test` without network still passes; CI fetches it first.
+ * `pnpm test:ffmpeg` without network still passes; CI fetches it first.
  */
 import { existsSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -200,7 +200,7 @@ async function main() {
   });
   if (!bin || !existsSync(bin)) {
     console.log(
-      "SKIPPED native render tests (run `npm run fetch:ffmpeg -- --host` to enable)"
+      "SKIPPED native render tests (run `pnpm fetch:ffmpeg -- --host` to enable)"
     );
     console.log("ALL NATIVE FFMPEG TESTS PASSED");
     return;

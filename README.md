@@ -48,12 +48,12 @@ the media. Export the final cut — without your file ever leaving your device.
 ## Development
 
 ```bash
-npm install     # also copies ffmpeg/onnxruntime WASM into public/vendor
-npm run dev     # Next.js web app (http://localhost:3000)
-npm run electron:dev   # Electron shell + Next.js dev server
-npm run build   # production web build
-npm run dist    # unsigned desktop installers into dist/
-npm run lint    # eslint
+pnpm install     # also copies ffmpeg/onnxruntime WASM into public/vendor
+pnpm dev     # Next.js web app (http://localhost:3000)
+pnpm electron:dev   # Electron shell + Next.js dev server
+pnpm build   # production web build
+pnpm dist    # unsigned desktop installers into dist/
+pnpm lint    # eslint
 ```
 
 For desktop packaging, signing, and cutting releases, see

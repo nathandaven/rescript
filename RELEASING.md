@@ -18,12 +18,12 @@ in `package.json`, makes a `Release vX.Y.Z` commit, creates a matching `vX.Y.Z`
 tag, and pushes both — which triggers the release workflow:
 
 ```bash
-npm run cut:patch   # 0.1.0 -> 0.1.1
-npm run cut:minor   # 0.1.0 -> 0.2.0
-npm run cut:major   # 0.1.0 -> 1.0.0
+pnpm cut:patch   # 0.1.0 -> 0.1.1
+pnpm cut:minor   # 0.1.0 -> 0.2.0
+pnpm cut:major   # 0.1.0 -> 1.0.0
 ```
 
-> These wrap `npm version <type> && git push --follow-tags`. `npm version`
+> These wrap `pnpm version <type> && git push --follow-tags`. `pnpm version`
 > refuses to run with uncommitted changes, so commit your work first.
 
 Then watch the build at <https://github.com/nathandaven/rescript/actions>.
@@ -35,7 +35,7 @@ the release to **published**. Auto-update only picks up published releases.
 To preview notes for unreleased commits on your machine:
 
 ```bash
-npm run notes:preview   # needs AI_GATEWAY_API_KEY in .env
+pnpm notes:preview   # needs AI_GATEWAY_API_KEY in .env
 ```
 
 ## Required GitHub secrets
@@ -84,7 +84,7 @@ ffmpeg run from the main process (`electron/media.ts`), not ffmpeg.wasm — the
 wasm heap caps out at 2 GiB and holds the whole render in memory, which is what
 made long and high-resolution desktop exports fail.
 
-`npm run dist` / `npm run release` run `npm run fetch:ffmpeg` first, which
+`pnpm dist` / `pnpm release` run `pnpm fetch:ffmpeg` first, which
 downloads the pinned [ffmpeg-static](https://github.com/eugeneware/ffmpeg-static)
 release for every arch the current OS builds (mac: x64 + arm64; win: x64, also
 used for arm64 under emulation; linux: x64), checks it against the SHA-256
@@ -120,13 +120,13 @@ MP4. If a hardware attempt fails, the same job re-runs in software.
 ## Testing the build locally (unsigned)
 
 ```bash
-npm run dist          # static-export Next, bundle electron main, build installers into dist/
+pnpm dist          # static-export Next, bundle electron main, build installers into dist/
 ```
 
 The Electron main/preload process is bundled with esbuild (`scripts/build-electron.mjs`)
 so the installer does **not** ship the Next.js / transformers / ffmpeg `node_modules`
 tree — those assets already live inside the static `out/` export. Auto-update is
-disabled in `npm run electron:dev` and only runs in packaged builds
+disabled in `pnpm electron:dev` and only runs in packaged builds
 (`app.isPackaged`).
 
 ## Notes

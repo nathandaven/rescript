@@ -1,6 +1,6 @@
 /**
  * Unit tests for transcript / subtitle export (and round-trips).
- * Run: npx tsx tests/serialize-transcript-test.ts
+ * Run: pnpm exec tsx tests/serialize-transcript-test.ts
  */
 import { parseTranscript } from "../lib/parseTranscript";
 import { replaceSpeaker } from "../lib/speakers";

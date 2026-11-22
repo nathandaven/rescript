@@ -1,6 +1,6 @@
 /**
  * Unit tests for speaker rename / reassign / move / merge / remove.
- * Run: npx tsx tests/speakers-test.ts
+ * Run: pnpm exec tsx tests/speakers-test.ts
  */
 import {
   addSpeaker,

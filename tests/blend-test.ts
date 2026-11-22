@@ -1,6 +1,6 @@
 /**
  * Unit tests for Blender (.blend) timeline export and source frame-rate parsing.
- * Run: npx tsx tests/blend-test.ts
+ * Run: pnpm exec tsx tests/blend-test.ts
  */
 import { spawnSync } from "child_process";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "fs";

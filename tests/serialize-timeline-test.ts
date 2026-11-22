@@ -1,6 +1,6 @@
 /**
  * Unit tests for NLE timeline export (XML / FCPXML / AAF).
- * Run: npx tsx tests/serialize-timeline-test.ts
+ * Run: pnpm exec tsx tests/serialize-timeline-test.ts
  */
 import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";

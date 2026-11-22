@@ -20,20 +20,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.14.0
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Typecheck
         run: |
-          npx next typegen
-          npx tsc --noEmit
-          npm run typecheck:electron
+          pnpm exec next typegen
+          pnpm exec tsc --noEmit
+          pnpm typecheck:electron
 
       # macOS: decode the App Store Connect API key used for notarization.
       - name: Setup Apple API key
@@ -46,7 +51,7 @@ jobs:
       # macOS: build, sign (Developer ID), notarize, and publish to GitHub Releases.
       - name: Build, sign & publish (macOS)
         if: matrix.os == 'macos-latest'
-        run: npm run release
+        run: pnpm release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_LINK: ${{ secrets.CSC_LINK }}
@@ -58,7 +63,7 @@ jobs:
       # Windows / Linux: build (unsigned) and publish to GitHub Releases.
       - name: Build & publish (Windows/Linux)
         if: matrix.os != 'macos-latest'
-        run: npm run release
+        run: pnpm release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -75,14 +80,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.14.0
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Resolve previous tag
         id: tags
@@ -101,7 +111,7 @@ jobs:
           if [ -n "${{ steps.tags.outputs.previous }}" ]; then
             ARGS+=("${{ steps.tags.outputs.previous }}")
           fi
-          npx tsx scripts/generate-release-notes.ts "${ARGS[@]}" --out release-notes.md
+          pnpm exec tsx scripts/generate-release-notes.ts "${ARGS[@]}" --out release-notes.md
           gh release edit "${{ github.ref_name }}" \
             --repo nathandaven/rescript \
             --notes-file release-notes.md

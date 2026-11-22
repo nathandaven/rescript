@@ -1,5 +1,5 @@
 /**
- * Run: npx tsx tests/disfluencies-test.ts
+ * Run: pnpm exec tsx tests/disfluencies-test.ts
  */
 import {
   DISFLUENCY_PLACEHOLDER,

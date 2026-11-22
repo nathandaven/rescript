@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Wait until the Next.js dev server responds, then launch Electron.
- * Used by `npm run electron:dev` so the window doesn't race the server.
+ * Used by `pnpm electron:dev` so the window doesn't race the server.
  */
 import { spawn } from "node:child_process";
 import { createRequire } from "node:module";

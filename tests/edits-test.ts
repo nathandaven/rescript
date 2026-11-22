@@ -1,6 +1,6 @@
 /**
  * Unit checks for flexible clip editing math (word bounds, splits, trims).
- * Run: npx tsx tests/edits-test.ts
+ * Run: pnpm exec tsx tests/edits-test.ts
  */
 
 import {

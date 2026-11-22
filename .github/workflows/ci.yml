@@ -17,43 +17,48 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.14.0
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: npm run lint
+        run: pnpm lint
 
       - name: Typecheck (web)
         run: |
           # next-env.d.ts is gitignored; generate it (and route types) before tsc.
-          npx next typegen
-          npx tsc --noEmit
+          pnpm exec next typegen
+          pnpm exec tsc --noEmit
 
       - name: Typecheck (electron)
-        run: npm run typecheck:electron
+        run: pnpm typecheck:electron
 
       - name: UI localization tests
-        run: npm run test:i18n
+        run: pnpm test:i18n
 
       - name: Timeline export tests
-        run: npm run test:timeline
+        run: pnpm test:timeline
 
       # The native-engine tests render through the same static ffmpeg the
       # desktop app bundles (they skip, rather than fail, without it).
       - name: Fetch native ffmpeg
-        run: npm run fetch:ffmpeg -- --host
+        run: pnpm fetch:ffmpeg -- --host
 
       - name: ffmpeg tests
-        run: npm run test:ffmpeg
+        run: pnpm test:ffmpeg
 
       - name: Build Next.js
-        run: npm run build
+        run: pnpm build
 
       - name: Build Electron main/preload
-        run: npm run build:electron
+        run: pnpm build:electron

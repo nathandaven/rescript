@@ -1,0 +1,11 @@
+packages:
+  - "."
+
+nodeLinker: hoisted
+
+allowBuilds:
+  electron-winstaller: true
+  esbuild: true
+  onnxruntime-node: true
+  protobufjs: true
+  sharp: true

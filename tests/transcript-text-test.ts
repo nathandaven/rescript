@@ -1,6 +1,6 @@
 /**
  * Unit tests for the screen-reader transcript text and caret → word mapping.
- * Run: npx tsx tests/transcript-text-test.ts
+ * Run: pnpm exec tsx tests/transcript-text-test.ts
  */
 import {
   buildTranscriptText,

@@ -1,5 +1,5 @@
 // Generates GitHub release notes from the git range since the previous tag.
-// Usage: `npx tsx scripts/generate-release-notes.ts <current-ref> [previous-ref] [--out <file>]`
+// Usage: `pnpm exec tsx scripts/generate-release-notes.ts <current-ref> [previous-ref] [--out <file>]`
 // Writes markdown to <file>, or to stdout when --out is omitted.
 // Requires AI_GATEWAY_API_KEY.
 import { config as loadEnv } from "dotenv";
@@ -53,7 +53,7 @@ function gatherContext(): {
   diffStat: string;
   changedFiles: string;
 } {
-  const excludeLock = "-- . ':!package-lock.json'";
+  const excludeLock = "-- . ':!pnpm-lock.yaml'";
 
   if (!previous) {
     return {

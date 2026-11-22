@@ -7,7 +7,7 @@
  *   - parakeet.js ORT  -> public/vendor/ort-parakeet/ (Parakeet TDT inference)
  *   - assets/aaf       -> public/vendor/aaf/        (Pro Tools / Logic AAF scaffold)
  *   - assets/blend     -> public/vendor/blend/      (Blender .blend scaffold)
- * Runs automatically on `npm install` (postinstall).
+ * Runs automatically on `pnpm install` (postinstall).
  */
 import {
   cpSync,

@@ -1,6 +1,7 @@
 {
   "name": "rescript",
   "version": "1.2.5",
+  "packageManager": "pnpm@12.14.0",
   "description": "Rescript — edit video and audio like you edit text, fully offline.",
   "private": true,
   "author": {
@@ -26,14 +27,14 @@
     "build:electron": "node scripts/build-electron.mjs",
     "fetch:ffmpeg": "node scripts/fetch-ffmpeg.mjs",
     "typecheck:electron": "tsc -p electron/tsconfig.json --noEmit",
-    "electron:dev": "npm run fetch:ffmpeg -- --host && npm run build:electron && concurrently -k -n next,electron -c cyan,magenta \"next dev\" \"node scripts/electron-dev.mjs\"",
+    "electron:dev": "pnpm fetch:ffmpeg -- --host && pnpm build:electron && concurrently -k -n next,electron -c cyan,magenta \"next dev\" \"node scripts/electron-dev.mjs\"",
     "export:web": "cross-env STATIC_EXPORT=1 next build",
     "export:desktop": "cross-env STATIC_EXPORT=1 NEXT_PUBLIC_ELECTRON=1 next build",
-    "dist": "npm run export:desktop && npm run build:electron && npm run fetch:ffmpeg && electron-builder --config.npmRebuild=false",
-    "release": "npm run export:desktop && npm run build:electron && npm run fetch:ffmpeg && electron-builder --publish always --config.npmRebuild=false",
-    "cut:patch": "npm version patch -m \"Release v%s\" && git push --follow-tags",
-    "cut:minor": "npm version minor -m \"Release v%s\" && git push --follow-tags",
-    "cut:major": "npm version major -m \"Release v%s\" && git push --follow-tags",
+    "dist": "pnpm export:desktop && pnpm build:electron && pnpm fetch:ffmpeg && electron-builder --config.npmRebuild=false",
+    "release": "pnpm export:desktop && pnpm build:electron && pnpm fetch:ffmpeg && electron-builder --publish always --config.npmRebuild=false",
+    "cut:patch": "pnpm version patch -m \"Release v%s\" && git push --follow-tags",
+    "cut:minor": "pnpm version minor -m \"Release v%s\" && git push --follow-tags",
+    "cut:major": "pnpm version major -m \"Release v%s\" && git push --follow-tags",
     "notes:preview": "tsx scripts/generate-release-notes.ts HEAD \"$(git tag --sort=-v:refname | head -1)\""
   },
   "dependencies": {

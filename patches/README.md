@@ -9,7 +9,7 @@ mismatch `patch-package` only *warns* — so a range would let a minor bump quie
 drop the fix. That matters more than usual here, because neither unpatched
 failure mode below announces itself: one is a silently truncated transcript, the
 other an export that hangs forever instead of erroring. When bumping
-`@huggingface/transformers`, re-cut the patch (`npx patch-package
+`@huggingface/transformers`, re-cut the patch (`pnpm exec patch-package
 @huggingface/transformers`) and re-run the CrisperWhisper models against a clip
 containing a filler.
 

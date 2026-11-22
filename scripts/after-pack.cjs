@@ -23,7 +23,7 @@ module.exports = async function afterPack(context) {
   const bin = join(resources, "ffmpeg", electronPlatformName === "win32" ? "ffmpeg.exe" : "ffmpeg");
   if (!existsSync(bin)) {
     throw new Error(
-      `[after-pack] native ffmpeg missing at ${bin} — run \`npm run fetch:ffmpeg\` before electron-builder`
+      `[after-pack] native ffmpeg missing at ${bin} — run \`pnpm fetch:ffmpeg\` before electron-builder`
     );
   }
   if (electronPlatformName !== "win32") chmodSync(bin, 0o755);
